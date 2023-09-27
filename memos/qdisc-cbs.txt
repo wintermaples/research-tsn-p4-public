@@ -1,0 +1,1 @@
+sudo tc qdisc replace dev eth1 handle 100:0 parent root cbs locredit -100000 hicredit 30 sendslope -9800000 idleslope 2000000
