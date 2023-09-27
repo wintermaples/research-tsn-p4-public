@@ -1,0 +1,59 @@
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 45519652
+    name: "MyIngress.ether_addr_table"
+    alias: "ether_addr_table"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ethernet.dstAddr"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  action_refs {
+    id: 29683729
+  }
+  action_refs {
+    id: 22516369
+  }
+  action_refs {
+    id: 25652968
+  }
+  size: 1024
+}
+actions {
+  preamble {
+    id: 29683729
+    name: "MyIngress.forward"
+    alias: "forward"
+  }
+  params {
+    id: 1
+    name: "port"
+    bitwidth: 9
+  }
+}
+actions {
+  preamble {
+    id: 22516369
+    name: "MyIngress.broadcast"
+    alias: "broadcast"
+  }
+  params {
+    id: 1
+    name: "mcast_grp_id"
+    bitwidth: 16
+  }
+}
+actions {
+  preamble {
+    id: 25652968
+    name: "MyIngress.drop"
+    alias: "drop"
+  }
+}
+type_info {
+}
