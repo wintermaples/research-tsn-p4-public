@@ -1,0 +1,10 @@
+[Unit]
+Description = PTP Slave 1
+
+[Service]
+ExecStart = /opt/ptp-slave-1.sh
+Restart = always
+Type = simple
+
+[Install]
+WantedBy = multi-user.target

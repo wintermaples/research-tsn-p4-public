@@ -1,0 +1,10 @@
+[Unit]
+Description = PTP Master
+
+[Service]
+ExecStart = /opt/ptp-master.sh
+Restart = always
+Type = simple
+
+[Install]
+WantedBy = multi-user.target
