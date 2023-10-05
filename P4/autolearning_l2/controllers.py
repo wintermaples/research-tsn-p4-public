@@ -305,7 +305,7 @@ class SwitchController_SW001(ExternalConfigSwitchController):
         features: list[SwitchFeature] = [
             SwitchFeature_SetMulticastGroup(
                 mcast_group_id=FLOODING_MCAST_GROUP_ID,
-                egress_ports={1, 2, 3},
+                egress_ports={1, 2, 3, 4, 5},
             ),
             SwitchFeature_L2AutoLearning(
                 flooding_mcast_group_id=FLOODING_MCAST_GROUP_ID,
