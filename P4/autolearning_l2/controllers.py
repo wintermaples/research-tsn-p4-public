@@ -174,6 +174,7 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                         
                     for te in shell.TableEntry(self.table_name).read():
                         print(te)
+                    print(ingress_port)
                     print(src_mac)
                     print(payload[0:6])
                     print(payload[6:12])
