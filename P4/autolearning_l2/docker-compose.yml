@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  p4c_sw001:
+    image: p4lang/p4c
+    entrypoint:
+      - p4c
+      - --target
+      - bmv2
+      - --arch
+      - v1model
+      - --p4runtime-files
+      - /opt/p4network/p4/sw001.p4info.txt
+      - --output
+      - /opt/p4network/p4/
+      - /opt/p4network/p4/sw001.p4
+    volumes:
+    - type: bind
+      source: "./"
+      target: "/opt/p4network/"
+
+  p4network:
+    image: opennetworking/p4mn
+    command: "--topo single,3 --mac"
+    privileged: true
+    stdin_open: true
+    tty: true
+    expose:
+      - 50001
+    ports:
+      - 50001:5001
+    volumes:
+    - type: bind
+      source: "./"
+      target: "/opt/p4network/"
+
+  switchcontroller_sw001:
+    image: p4_autolearning_l2
+    build: .
+    entrypoint:
+      - python
+      - /opt/p4network/controllers.py
+      - SW001
+      - --grpc-addr
+      - p4network:50001
+      - --config
+      - /opt/p4network/p4/sw001.p4info.txt,/opt/p4network/p4/sw001.json
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: "./"
+      target: "/opt/p4network/"
+    depends_on:
+      p4c_sw001:
+        condition: service_completed_successfully
