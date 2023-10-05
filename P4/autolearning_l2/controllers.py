@@ -172,12 +172,12 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                             mcast_grp=str(FLOODING_MCAST_GROUP_ID),
                         ).send()
                         
-                    # for te in shell.TableEntry(self.table_name).read():
-                    #     print(te)
-                    # print(src_mac)
-                    # print(payload[0:6])
-                    # print(payload[6:12])
-                    # print("=" * 20)
+                    for te in shell.TableEntry(self.table_name).read():
+                        print(te)
+                    print(src_mac)
+                    print(payload[0:6])
+                    print(payload[6:12])
+                    print("=" * 20)
 
                 time.sleep(0.1)
 
