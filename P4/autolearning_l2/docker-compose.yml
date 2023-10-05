@@ -19,20 +19,20 @@ services:
       source: "./"
       target: "/opt/p4network/"
 
-  p4network:
-    image: opennetworking/p4mn
-    command: "--topo single,3 --mac"
-    privileged: true
-    stdin_open: true
-    tty: true
-    expose:
-      - 50001
-    ports:
-      - 50001:5001
-    volumes:
-    - type: bind
-      source: "./"
-      target: "/opt/p4network/"
+  # p4network:
+  #   image: opennetworking/p4mn
+  #   command: "--topo single,3 --mac"
+  #   privileged: true
+  #   stdin_open: true
+  #   tty: true
+  #   expose:
+  #     - 50001
+  #   ports:
+  #     - 50001:5001
+  #   volumes:
+  #   - type: bind
+  #     source: "./"
+  #     target: "/opt/p4network/"
 
   switchcontroller_sw001:
     image: p4_autolearning_l2
@@ -42,7 +42,7 @@ services:
       - /opt/p4network/controllers.py
       - SW001
       - --grpc-addr
-      - p4network:50001
+      - 192.168.212.101:50001
       - --config
       - /opt/p4network/p4/sw001.p4info.txt,/opt/p4network/p4/sw001.json
     restart: unless-stopped
