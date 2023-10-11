@@ -23,6 +23,7 @@ header packet_out_header_t {
         bit<9> egress_port;
         bit<7> _pad;
         bit<9> src_ingress_port;
+        bit<7> _pad;
         bit<16> mcast_grp;
 }
 
