@@ -94,6 +94,7 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
             header packet_out_header_t {
                     bit<9> egress_port;
                     bit<7> _pad;
+                    bit<9> src_ingress_port;
                     bit<16> mcast_grp;
             }
 
@@ -108,6 +109,7 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
 
         - P4 Program must parse "packet_out" header if ingress_port == CPU_PORT.
         - P4 Program must set standard_metadata.mcast_grp and invalid "packet_out" header if "packet_out" is valid and packet_out.mcast_grp != 0.
+        - P4 Program must set standard_metadata.ingress_port to packet_out.src_ingress_port if packet_out.src_ingress_port != 0.
         - P4 Program must emit "packet_in", "packet_out" header.
         - P4 Program must have forward action.
     """

@@ -22,6 +22,7 @@ header packet_in_header_t {
 header packet_out_header_t {
         bit<9> egress_port;
         bit<7> _pad;
+        bit<9> src_ingress_port;
         bit<16> mcast_grp;
 }
 
@@ -142,6 +143,9 @@ control MyIngress(
                 standard_metadata.egress_spec = hdr.packet_out.egress_port;
             } else {
                 standard_metadata.egress_spec = hdr.packet_out.egress_port;
+            }
+            if (hdr.packet_out.src_ingress_port != 0) {
+                standard_metadata.ingress_spec = hdr.packet_out.src_ingress_port;
             }
             hdr.packet_out.setInvalid();
         } else {
