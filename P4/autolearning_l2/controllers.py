@@ -166,12 +166,14 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                         PacketOut(
                             payload=payload,
                             egress_port=str(self.l2_table[dst_mac]),
+                            src_ingress_port=str(ingress_port),
                         ).send()
                     else:
                         PacketOut(
                             payload=payload,
                             egress_port=str(ingress_port),
                             mcast_grp=str(FLOODING_MCAST_GROUP_ID),
+                            src_ingress_port=str(ingress_port),
                         ).send()
                         
                     for te in shell.TableEntry(self.table_name).read():
