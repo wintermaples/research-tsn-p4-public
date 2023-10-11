@@ -145,7 +145,7 @@ control MyIngress(
                 standard_metadata.egress_spec = hdr.packet_out.egress_port;
             }
             if (hdr.packet_out.src_ingress_port != 0) {
-                standard_metadata.ingress_spec = hdr.packet_out.src_ingress_port;
+                standard_metadata.ingress_port = hdr.packet_out.src_ingress_port;
             }
             hdr.packet_out.setInvalid();
         } else {
