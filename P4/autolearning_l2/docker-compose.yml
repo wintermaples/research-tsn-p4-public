@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  p4c_sw001:
+  p4c:
     image: p4lang/p4c
     entrypoint:
       - p4c
@@ -10,10 +10,10 @@ services:
       - --arch
       - v1model
       - --p4runtime-files
-      - /opt/p4network/p4/sw001.p4info.txt
+      - /opt/p4network/p4/sw.p4info.txt
       - --output
       - /opt/p4network/p4/
-      - /opt/p4network/p4/sw001.p4
+      - /opt/p4network/p4/sw.p4
     volumes:
     - type: bind
       source: "./"
@@ -42,10 +42,34 @@ services:
       - /opt/p4network/controllers.py
       - SW001
       - --grpc-addr
-      - 192.168.212.101:50001
+      - 133.68.105.54:50001
       - --config
       - /opt/p4network/p4/sw001.p4info.txt,/opt/p4network/p4/sw001.json
     restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+    - type: bind
+      source: "./"
+      target: "/opt/p4network/"
+    depends_on:
+      p4c_sw001:
+        condition: service_completed_successfully
+
+  switchcontroller_sw002:
+    image: p4_autolearning_l2
+    build: .
+    entrypoint:
+      - python
+      - /opt/p4network/controllers.py
+      - SW002
+      - --grpc-addr
+      - 133.68.105.56:50001
+      - --config
+      - /opt/p4network/p4/sw001.p4info.txt,/opt/p4network/p4/sw001.json
+    restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
     - type: bind
       source: "./"

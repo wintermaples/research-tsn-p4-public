@@ -309,7 +309,39 @@ class SwitchController_SW001(ExternalConfigSwitchController):
         features: list[SwitchFeature] = [
             SwitchFeature_SetMulticastGroup(
                 mcast_group_id=FLOODING_MCAST_GROUP_ID,
-                egress_ports={3, 4},
+                egress_ports={1, 2},
+            ),
+            SwitchFeature_L2AutoLearning(
+                flooding_mcast_group_id=FLOODING_MCAST_GROUP_ID,
+                table_name="ether_addr_table",
+                forward_action_name="forward",
+            ),
+        ]
+
+        feature_threads: list[threading.Thread] = []
+        for feature in features:
+            feature_threads.append(
+                feature.setup_feature()
+            )
+
+        for feature_thread in feature_threads:
+            feature_thread.start()
+
+        for feature_thread in feature_threads:
+            feature_thread.join()
+
+
+class SwitchController_SW002(ExternalConfigSwitchController):
+
+    @property
+    def switch_name(self) -> str:
+        return "SW002"
+
+    def run(self):
+        features: list[SwitchFeature] = [
+            SwitchFeature_SetMulticastGroup(
+                mcast_group_id=FLOODING_MCAST_GROUP_ID,
+                egress_ports={1, 2},
             ),
             SwitchFeature_L2AutoLearning(
                 flooding_mcast_group_id=FLOODING_MCAST_GROUP_ID,
