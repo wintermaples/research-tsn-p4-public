@@ -117,6 +117,11 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
     PACKET_IN_HEADER_NAME = 'packet_in'
     PACKET_IN_HEADER_INGRESS_PORT_NAME = 'ingress_port'
 
+    FLOODING_MULTICAST_MAC_ADDRESSES = [
+        "0xffffffffffff",
+        "0x011b19000000",
+    ]
+
     class L2LearningThread(threading.Thread):
 
         def __init__(self, group: None = None, target: Callable[..., object] | None = None, name: str | None = None, args: Iterable[Any] = [], kwargs: Mapping[str, Any] | None = None, *, daemon: bool | None = None) -> None:
@@ -146,7 +151,14 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                     if src_mac not in self.l2_table:
                         self.l2_table[src_mac] = ingress_port
 
-                    if src_mac in self.l2_table and dst_mac in self.l2_table:
+                    if dst_mac in SwitchFeature_L2AutoLearning.FLOODING_MULTICAST_MAC_ADDRESSES:
+                        PacketOut(
+                            payload=payload,
+                            egress_port=str(ingress_port),
+                            mcast_grp=str(FLOODING_MCAST_GROUP_ID),
+                            src_ingress_port=str(ingress_port),
+                        ).send()
+                    elif src_mac in self.l2_table and dst_mac in self.l2_table:
                         te = TableEntry(self.table_name)(
                             action=self.forward_action_name)
                         te.match['hdr.ethernet.srcAddr'] = dst_mac
@@ -176,12 +188,12 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                             src_ingress_port=str(ingress_port),
                         ).send()
                         
-                    for te in shell.TableEntry(self.table_name).read():
-                        print(te)
-                    print(ingress_port)
-                    print(src_mac)
-                    print(dst_mac)
-                    print("=" * 20)
+                    # for te in shell.TableEntry(self.table_name).read():
+                    #     print(te)
+                    # print(ingress_port)
+                    # print(src_mac)
+                    # print(dst_mac)
+                    # print("=" * 20)
 
                 time.sleep(0.1)
 
@@ -299,11 +311,11 @@ class ExternalConfigSwitchController(SwitchController):
         return self._ssl_options
 
 
-class SwitchController_SW001(ExternalConfigSwitchController):
+class SwitchController_SW01(ExternalConfigSwitchController):
 
     @property
     def switch_name(self) -> str:
-        return "SW001"
+        return "SW01"
 
     def run(self):
         features: list[SwitchFeature] = [
@@ -331,11 +343,11 @@ class SwitchController_SW001(ExternalConfigSwitchController):
             feature_thread.join()
 
 
-class SwitchController_SW002(ExternalConfigSwitchController):
+class SwitchController_SW02(ExternalConfigSwitchController):
 
     @property
     def switch_name(self) -> str:
-        return "SW002"
+        return "SW02"
 
     def run(self):
         features: list[SwitchFeature] = [
@@ -375,11 +387,16 @@ def main():
     config: str = args.config
 
     switches: list[SwitchController] = [
-        SwitchController_SW001(
+        SwitchController_SW01(
             device_id=1,
             grpc_addr=grpc_addr,
             config=FwdPipeConfig(*config.split(',')),
-        )
+        ),
+        SwitchController_SW02(
+            device_id=1,
+            grpc_addr=grpc_addr,
+            config=FwdPipeConfig(*config.split(',')),
+        ),
     ]
 
     target_switch: SwitchController | None = next(
