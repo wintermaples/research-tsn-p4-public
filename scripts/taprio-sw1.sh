@@ -17,9 +17,9 @@ clockid CLOCK_TAI
 
 tc qdisc replace dev enp1s0 parent 100:1 etf \
 skip_sock_check \
-delta 20000 clockid CLOCK_TAI
+offload delta 20000 clockid CLOCK_TAI
 
 tc qdisc replace dev enp1s0 parent 100:2 etf \
 skip_sock_check \
-delta 20000 clockid CLOCK_TAI
+offload delta 20000 clockid CLOCK_TAI
 
