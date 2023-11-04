@@ -24,7 +24,7 @@ sched-entry S 01 360000 \
 sched-entry S 02 360000 \
 sched-entry S 04 120000 \
 flags 0x1 \
-txtime-delay 120000 \
+txtime-delay 80000 \
 clockid CLOCK_TAI
 
 tc qdisc replace dev enp1s0 parent 100:1 etf \
@@ -48,7 +48,7 @@ sched-entry S 01 360000 \
 sched-entry S 02 360000 \
 sched-entry S 04 120000 \
 flags 0x1 \
-txtime-delay 120000 \
+txtime-delay 80000 \
 clockid CLOCK_TAI
 
 tc qdisc replace dev enp3s0 parent 101:1 etf \
