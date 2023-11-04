@@ -22,7 +22,7 @@ queues 1@0 1@0 1@0 \
 base-time 0 \
 sched-entry S 01 600000 \
 sched-entry S 02 600000 \
-sched-entry S 04 200000 \
+sched-entry S 04 300000 \
 flags 0x1 \
 txtime-delay 80000 \
 clockid CLOCK_TAI
@@ -46,7 +46,7 @@ queues 1@0 1@0 1@0 \
 base-time 0 \
 sched-entry S 01 600000 \
 sched-entry S 02 600000 \
-sched-entry S 04 200000 \
+sched-entry S 04 300000 \
 flags 0x1 \
 txtime-delay 80000 \
 clockid CLOCK_TAI
