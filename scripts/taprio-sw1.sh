@@ -17,7 +17,7 @@ tc qdisc del dev enp1s0 root
 tc qdisc replace dev enp1s0 parent root \
 handle 100 taprio \
 num_tc 3 \
-map 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \
+map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
 queues 1@0 1@0 1@0 \
 base-time 0 \
 sched-entry S 01 360000 \
@@ -41,7 +41,7 @@ tc qdisc del dev enp3s0 root
 tc qdisc replace dev enp3s0 parent root \
 handle 101 taprio \
 num_tc 3 \
-map 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \
+map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 \
 queues 1@0 1@0 1@0 \
 base-time 0 \
 sched-entry S 01 360000 \
