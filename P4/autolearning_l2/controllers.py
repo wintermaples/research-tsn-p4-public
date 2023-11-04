@@ -187,13 +187,14 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                             mcast_grp=str(FLOODING_MCAST_GROUP_ID),
                             src_ingress_port=str(ingress_port),
                         ).send()
-                        
-                    # for te in shell.TableEntry(self.table_name).read():
-                    #     print(te)
-                    # print(ingress_port)
-                    # print(src_mac)
-                    # print(dst_mac)
-                    # print("=" * 20)
+                    
+                    if src_mac.startswith("0xe8") or dst_mac.startswith("0xe8") or src_mac.startswith("0xb8") or dst_mac.startswith("0xb8"):
+                        for te in shell.TableEntry(self.table_name).read():
+                            print(te)
+                        print(ingress_port)
+                        print(src_mac)
+                        print(dst_mac)
+                        print("=" * 20)
 
                 time.sleep(0.1)
 
