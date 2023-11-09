@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ethtool -K enp1s0 gso off
+# ethtool -K enp1s0 gso off
 ethtool -K enp1s0 gro off
 ethtool -K enp1s0 tso off
-ethtool -K enp3s0 gso off
+# ethtool -K enp3s0 gso off
 ethtool -K enp3s0 gro off
 ethtool -K enp3s0 tso off
 
