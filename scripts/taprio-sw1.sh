@@ -31,9 +31,9 @@ tc qdisc replace dev enp1s0 parent 100:1 etf \
 skip_sock_check \
 offload delta 100000 clockid CLOCK_TAI
 
-tc qdisc replace dev enp1s0 parent 100:2 etf \
-skip_sock_check \
-offload delta 100000 clockid CLOCK_TAI
+# tc qdisc replace dev enp1s0 parent 100:2 etf \
+# skip_sock_check \
+# offload delta 100000 clockid CLOCK_TAI
 
 ##### enp3s0
 tc qdisc del dev enp3s0 root
@@ -55,6 +55,6 @@ tc qdisc replace dev enp3s0 parent 101:1 etf \
 skip_sock_check \
 offload delta 100000 clockid CLOCK_TAI
 
-tc qdisc replace dev enp3s0 parent 101:2 etf \
-skip_sock_check \
-offload delta 100000 clockid CLOCK_TAI
+# tc qdisc replace dev enp3s0 parent 101:2 etf \
+# skip_sock_check \
+# offload delta 100000 clockid CLOCK_TAI
