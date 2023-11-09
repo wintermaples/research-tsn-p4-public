@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# ethtool -K enp1s0 gso off
+ethtool -K enp1s0 gso off
 ethtool -K enp1s0 gro off
 ethtool -K enp1s0 tso off
-# ethtool -K enp3s0 gso off
+ethtool -K enp3s0 gso off
 ethtool -K enp3s0 gro off
 ethtool -K enp3s0 tso off
+
+ethtool -s enp1s0 speed 100
+ethtool -s enp3s0 speed 100
 
 pkill -f phc2sys
 phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -O 0 &
@@ -29,7 +32,7 @@ clockid CLOCK_TAI
 
 tc qdisc replace dev enp1s0 parent 100:1 etf \
 skip_sock_check \
-offload delta 100000 clockid CLOCK_TAI
+delta 100000 clockid CLOCK_TAI
 
 # tc qdisc replace dev enp1s0 parent 100:2 etf \
 # skip_sock_check \
@@ -53,7 +56,7 @@ clockid CLOCK_TAI
 
 tc qdisc replace dev enp3s0 parent 101:1 etf \
 skip_sock_check \
-offload delta 100000 clockid CLOCK_TAI
+delta 100000 clockid CLOCK_TAI
 
 # tc qdisc replace dev enp3s0 parent 101:2 etf \
 # skip_sock_check \
