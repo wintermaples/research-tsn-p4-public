@@ -1,39 +1,23 @@
-# Qdisc to filter packets
-tc qdisc add dev enp42s0 root handle 1: prio bands 2 priomap 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+DEV="eth0"
 
-# Filter vlan packets and set priority based on vlan PCP
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0x0000)" \
-flowid 10: \
-action skbedit priority 0
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0x2000)" \
-flowid 10: \
-action skbedit priority 1
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0x4000)" \
-flowid 10: \
-action skbedit priority 2
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0x6000)" \
-flowid 10: \
-action skbedit priority 3
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0x8000)" \
-flowid 10: \
-action skbedit priority 4
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0xa000)" \
-flowid 10: \
-action skbedit priority 5
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0xc000)" \
-flowid 10: \
-action skbedit priority 6
-tc filter add dev enp42s0 protocol ip parent 1: prio 0 \
-basic match "meta(vlan mask 0x8000 eq 0xe000)" \
-flowid 10: \
-action skbedit priority 7
+tc qdisc del dev $DEV root
+tc qdisc del dev $DEV clsact
 
-# TODO: Taprio
-tc qdisc add dev enp42s0 parent 1:1 handle 10: prio bands 3 priomap 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+tc qdisc replace dev $DEV parent root \
+handle 1: taprio \
+num_tc 3 \
+map 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 \
+queues 1@0 1@1 1@2 \
+base-time 0 \
+sched-entry S 01 246720 \
+sched-entry S 02 493440 \
+sched-entry S 04 123360 \
+flags 0x1 \
+txtime-delay 200000 \
+clockid CLOCK_TAI
+
+tc qdisc add dev $DEV clsact
+tc filter add dev $DEV egress prio 1 u32 match ip dport 443 0xffff action skbedit priority 3
+
+tc -s qdisc show dev $DEV
+tc -s filter show dev $DEV
