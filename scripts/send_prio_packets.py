@@ -15,9 +15,10 @@ def s_to_ns(seconds: int):
 # Create args parser
 parser = argparse.ArgumentParser(description="")
 parser.add_argument("--prio", type=int, default=0, help="Socket priority (SO_PRIORITY)")
+parser.add_argument("--payload-size", default=1494, type=int, help="Payload size")
+parser.add_argument('--start-delay', default=100000, help="Delay of starting sending packets (nano seconds)")
 parser.add_argument("--host", required=True, type=str, help="Host address")
 parser.add_argument("--port", required=True, type=int, help="Host port")
-parser.add_argument("--payload-size", required=True, type=int, help="Payload size")
 parser.add_argument("--time", required=True, type=int, help="Communication time in seconds")
 parser.add_argument("--interval", required=True, type=int, help="Communication interval in nanoseconds")
 
@@ -28,6 +29,7 @@ prio = args.prio
 payload_size_bytes = args.payload_size
 time_s = args.time
 interval_ns = args.interval
+start_delay = args.start_delay
 
 # Create payload
 payload = bytes([0] * payload_size_bytes)
@@ -38,9 +40,10 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_PRIORITY, prio)
 s.setsockopt(socket.SOL_SOCKET, SO_TXTIME, pack('iI', 11, 1))
 
 # Send packets until end time
-start_clock_tai = time.clock_gettime_ns(time.CLOCK_TAI)
+start_clock_tai = time.clock_gettime_ns(time.CLOCK_TAI) + start_delay
 end_clock_tai = start_clock_tai + s_to_ns(time_s)
 n = 0
+send_cnt = 0
 while True:
     # Calc tx time
     tx_time = start_clock_tai + n * interval_ns
@@ -50,6 +53,9 @@ while True:
     if tx_time > end_clock_tai:
         break
 
+    # If tx-time time is in invalid sched-entry, skip sending
+
+
     # Send packet
     s.sendmsg(
         [payload],
@@ -57,7 +63,7 @@ while True:
             (
                 socket.SOL_SOCKET,
                 SO_TXTIME,
-                (tx_time).to_bytes(8, 'big')
+                (tx_time).to_bytes(8, 'little')
             )
         ],
         0,
