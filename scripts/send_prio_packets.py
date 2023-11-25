@@ -15,7 +15,7 @@ def s_to_ns(seconds: int):
 # Create args parser
 parser = argparse.ArgumentParser(description="")
 parser.add_argument("--prio", type=int, default=0, help="Socket priority (SO_PRIORITY)")
-parser.add_argument("--payload-size", default=1494, type=int, help="Payload size")
+parser.add_argument("--payload-size", default=1472, type=int, help="Payload size")
 parser.add_argument('--start-delay', default=100000, help="Delay of starting sending packets (nano seconds)")
 parser.add_argument("--host", required=True, type=str, help="Host address")
 parser.add_argument("--port", required=True, type=int, help="Host port")
