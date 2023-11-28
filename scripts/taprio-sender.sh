@@ -36,6 +36,6 @@ clockid CLOCK_TAI
 
 tc qdisc replace dev enp3s0 parent 1:1 handle 10 etf \
 skip_sock_check \
-offload delta 1000000000 clockid CLOCK_TAI
+delta 1000000 clockid CLOCK_TAI
 
 tc -s qdisc show dev $DEV

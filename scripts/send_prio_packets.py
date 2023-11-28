@@ -31,9 +31,6 @@ time_s = args.time
 interval_ns = args.interval
 start_delay = args.start_delay
 
-# Create payload
-payload = bytes([0] * payload_size_bytes)
-
 # Create socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_PRIORITY, prio)
@@ -53,8 +50,9 @@ while True:
     if tx_time > end_clock_tai:
         break
 
-    # If tx-time time is in invalid sched-entry, skip sending
-
+    # Create payload
+    send_cnt_bytes = (send_cnt).to_bytes(8, 'little')
+    payload = send_cnt_bytes + bytes([0] * payload_size_bytes)
 
     # Send packet
     s.sendmsg(
@@ -69,3 +67,4 @@ while True:
         0,
         addr,
     )
+    send_cnt += 1
