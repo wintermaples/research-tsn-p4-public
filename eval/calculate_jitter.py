@@ -1,6 +1,7 @@
 from itertools import groupby
 from typing import Any
 from scapy.all import sniff, rdpcap, Packet
+import logging
 
 pcap_file_path = '/Users/wintermaples/Downloads/sample.pcap'
 
@@ -16,6 +17,9 @@ packets_grouped_by_payload = groupby(packets, key=lambda x: x.payload)
 delays = []
 for payload, packets_grouper in packets_grouped_by_payload:
     packets = list(packets_grouper)
+    if len(packets) != 2:
+        logging.warn(f"Packets pair that number is over 2! It will ignore.")
+        continue
     delays = abs(packets[1].time - packets[0].time)
 
 max_delay = max(delays)
