@@ -18,7 +18,7 @@ delays = []
 for payload, packets_grouper in packets_grouped_by_payload:
     packets = list(packets_grouper)
     if len(packets) != 2:
-        logging.warn(f"Packets pair that number is over 2! It will ignore.")
+        logging.warn(f"Packets pair that number is not 2! It will ignore.")
         continue
     delays = abs(packets[1].time - packets[0].time)
 
