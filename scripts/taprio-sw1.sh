@@ -6,13 +6,16 @@ ethtool -K enp1s0 tso off
 ethtool -K enp3s0 gso off
 ethtool -K enp3s0 gro off
 ethtool -K enp3s0 tso off
+ethtool -K enx3495db2e4350 gso off
+ethtool -K enx3495db2e4350 gro off
+ethtool -K enx3495db2e4350 tso off
 
 ethtool -s enp1s0 speed 10
 ethtool -s enp3s0 speed 10
+ethtool -s enx3495db2e4350 speed 10
 
-pkill -f phc2sys
-phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -O 0 &
-
+# pkill -f phc2sys
+# phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -O 0 &
 
 ##### enp1s0 #####
 DEV="enp1s0"
