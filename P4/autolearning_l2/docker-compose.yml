@@ -39,6 +39,7 @@ services:
     build: .
     entrypoint:
       - python
+      - -u
       - /opt/p4network/controllers.py
       - SW01
       - --grpc-addr

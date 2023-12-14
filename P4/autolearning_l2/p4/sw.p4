@@ -1,7 +1,8 @@
 #include <core.p4>
 #include <v1model.p4>
 
-const bit<16> TYPE_IPV4 = 0x800;
+const bit<16> TYPE_IPV4 = 0x0800;
+const bit<16> TYPE_802_1_Q = 0x8100;
 
 #define CPU_PORT 255
 
@@ -26,14 +27,11 @@ header packet_out_header_t {
         bit<6> _pad;
 }
 
-
 header ethernet_t {
     macAddr_t dstAddr;
     macAddr_t srcAddr;
     bit<16> etherType;
 }
-
-
 
 header ipv4_t {
     bit<4> version;
@@ -50,6 +48,13 @@ header ipv4_t {
     ipv4Addr_t dstAddr;
 }
 
+header vlan_t {
+    bit<3> pcp;
+    bit<1> dei;
+    bit<12> id;
+    bit<16> etherType;
+}
+
 struct metadata {
 
 }
@@ -58,6 +63,7 @@ struct headers {
     packet_in_header_t packet_in;
     packet_out_header_t packet_out;
     ethernet_t ethernet;
+    vlan_t vlan;
     ipv4_t ipv4;
 }
 
@@ -84,6 +90,15 @@ parser MyParser(
     state parse_ethernet {
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
+            TYPE_IPV4: parse_ipv4;
+            TYPE_802_1_Q: parse_vlan;
+            default: accept;
+        }
+    }
+
+    state parse_vlan {
+        packet.extract(hdr.vlan);
+        transition select(hdr.vlan.etherType) {
             TYPE_IPV4: parse_ipv4;
             default: accept;
         }
@@ -149,6 +164,11 @@ control MyIngress(
             }
             hdr.packet_out.setInvalid();
         } else {
+            // Set priority queue based on PCP if 802.1Q is valid
+            if (hdr.vlan.isValid()) {
+                standard_metadata.priority = hdr.vlan.pcp;
+            }
+
             if (hdr.ethernet.isValid()) {
                 ether_addr_table.apply();
             }
@@ -169,8 +189,9 @@ control MyEgress(
 
     apply {
         // Prune multicast packet to ingress port to preventing loop
-        if (standard_metadata.egress_port == standard_metadata.ingress_port)
+        if (standard_metadata.egress_port == standard_metadata.ingress_port) {
             drop();
+        }
     }
 }
 
@@ -206,6 +227,7 @@ control MyDeparser(
         packet.emit(hdr.packet_in);
         packet.emit(hdr.packet_out);
         packet.emit(hdr.ethernet);
+        packet.emit(hdr.vlan);
         packet.emit(hdr.ipv4);
     }
 }

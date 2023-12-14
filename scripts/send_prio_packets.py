@@ -52,7 +52,7 @@ while True:
 
     # Create payload
     send_cnt_bytes = (send_cnt).to_bytes(8, 'little')
-    payload = send_cnt_bytes + bytes([0] * payload_size_bytes)
+    payload = send_cnt_bytes + bytes([0] * payload_size_bytes - len(send_cnt_bytes))
 
     # Send packet
     s.sendmsg(

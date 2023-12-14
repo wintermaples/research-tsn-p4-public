@@ -56,8 +56,18 @@
       ]
     },
     {
-      "name" : "ipv4_t",
+      "name" : "vlan_t",
       "id" : 5,
+      "fields" : [
+        ["pcp", 3, false],
+        ["dei", 1, false],
+        ["id", 12, false],
+        ["etherType", 16, false]
+      ]
+    },
+    {
+      "name" : "ipv4_t",
+      "id" : 6,
       "fields" : [
         ["version", 4, false],
         ["ihl", 4, false],
@@ -111,8 +121,15 @@
       "pi_omit" : true
     },
     {
-      "name" : "ipv4",
+      "name" : "vlan",
       "id" : 5,
+      "header_type" : "vlan_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ipv4",
+      "id" : 6,
       "header_type" : "ipv4_t",
       "metadata" : false,
       "pi_omit" : true
@@ -210,6 +227,12 @@
               "next_state" : "parse_ipv4"
             },
             {
+              "type" : "hexstr",
+              "value" : "0x8100",
+              "mask" : null,
+              "next_state" : "parse_vlan"
+            },
+            {
               "type" : "default",
               "value" : null,
               "mask" : null,
@@ -224,8 +247,43 @@
           ]
         },
         {
-          "name" : "parse_ipv4",
+          "name" : "parse_vlan",
           "id" : 3,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "vlan"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0800",
+              "mask" : null,
+              "next_state" : "parse_ipv4"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["vlan", "etherType"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_ipv4",
+          "id" : 4,
           "parser_ops" : [
             {
               "parameters" : [
@@ -257,11 +315,11 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/opt/p4network/p4/sw.p4",
-        "line" : 201,
+        "line" : 222,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
-      "order" : ["packet_in", "packet_out", "ethernet", "ipv4"],
+      "order" : ["packet_in", "packet_out", "ethernet", "vlan", "ipv4"],
       "primitives" : []
     }
   ],
@@ -274,7 +332,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/opt/p4network/p4/sw.p4",
-        "line" : 181,
+        "line" : 202,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -348,7 +406,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 112,
+            "line" : 127,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = 255"
           }
@@ -363,7 +421,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 113,
+            "line" : 128,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.setValid()"
           }
@@ -382,7 +440,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 114,
+            "line" : 129,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.ingress_port = standard_metadata.ingress_port"
           }
@@ -413,7 +471,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 118,
+            "line" : 133,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -435,7 +493,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 122,
+            "line" : 137,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -443,7 +501,7 @@
       ]
     },
     {
-      "name" : "sw142",
+      "name" : "sw157",
       "id" : 3,
       "runtime_data" : [],
       "primitives" : [
@@ -461,7 +519,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 142,
+            "line" : 157,
             "column" : 16,
             "source_fragment" : "standard_metadata.mcast_grp = hdr.packet_out.mcast_grp"
           }
@@ -480,7 +538,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 143,
+            "line" : 158,
             "column" : 16,
             "source_fragment" : "standard_metadata.egress_spec = hdr.packet_out.egress_port"
           }
@@ -488,7 +546,7 @@
       ]
     },
     {
-      "name" : "sw145",
+      "name" : "sw160",
       "id" : 4,
       "runtime_data" : [],
       "primitives" : [
@@ -506,7 +564,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 145,
+            "line" : 160,
             "column" : 16,
             "source_fragment" : "standard_metadata.egress_spec = hdr.packet_out.egress_port"
           }
@@ -514,7 +572,7 @@
       ]
     },
     {
-      "name" : "sw148",
+      "name" : "sw163",
       "id" : 5,
       "runtime_data" : [],
       "primitives" : [
@@ -532,7 +590,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 148,
+            "line" : 163,
             "column" : 16,
             "source_fragment" : "standard_metadata.ingress_port = hdr.packet_out.src_ingress_port"
           }
@@ -540,7 +598,7 @@
       ]
     },
     {
-      "name" : "sw150",
+      "name" : "sw165",
       "id" : 6,
       "runtime_data" : [],
       "primitives" : [
@@ -554,7 +612,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 150,
+            "line" : 165,
             "column" : 12,
             "source_fragment" : "hdr.packet_out.setInvalid()"
           }
@@ -562,8 +620,34 @@
       ]
     },
     {
-      "name" : "MyEgress.drop",
+      "name" : "sw169",
       "id" : 7,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "priority"]
+            },
+            {
+              "type" : "field",
+              "value" : ["vlan", "pcp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/opt/p4network/p4/sw.p4",
+            "line" : 169,
+            "column" : 16,
+            "source_fragment" : "standard_metadata.priority = hdr.vlan.pcp"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "MyEgress.drop",
+      "id" : 8,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -576,7 +660,7 @@
           ],
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 167,
+            "line" : 187,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -590,18 +674,18 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/opt/p4network/p4/sw.p4",
-        "line" : 106,
+        "line" : 121,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
       "init_table" : "node_2",
       "tables" : [
         {
-          "name" : "tbl_sw142",
+          "name" : "tbl_sw157",
           "id" : 0,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 142,
+            "line" : 157,
             "column" : 44,
             "source_fragment" : "= hdr.packet_out.mcast_grp; ..."
           },
@@ -613,10 +697,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [3],
-          "actions" : ["sw142"],
+          "actions" : ["sw157"],
           "base_default_next" : "node_6",
           "next_tables" : {
-            "sw142" : "node_6"
+            "sw157" : "node_6"
           },
           "default_entry" : {
             "action_id" : 3,
@@ -626,11 +710,11 @@
           }
         },
         {
-          "name" : "tbl_sw145",
+          "name" : "tbl_sw160",
           "id" : 1,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 145,
+            "line" : 160,
             "column" : 46,
             "source_fragment" : "="
           },
@@ -642,10 +726,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [4],
-          "actions" : ["sw145"],
+          "actions" : ["sw160"],
           "base_default_next" : "node_6",
           "next_tables" : {
-            "sw145" : "node_6"
+            "sw160" : "node_6"
           },
           "default_entry" : {
             "action_id" : 4,
@@ -655,11 +739,11 @@
           }
         },
         {
-          "name" : "tbl_sw148",
+          "name" : "tbl_sw163",
           "id" : 2,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 148,
+            "line" : 163,
             "column" : 47,
             "source_fragment" : "="
           },
@@ -671,10 +755,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [5],
-          "actions" : ["sw148"],
-          "base_default_next" : "tbl_sw150",
+          "actions" : ["sw163"],
+          "base_default_next" : "tbl_sw165",
           "next_tables" : {
-            "sw148" : "tbl_sw150"
+            "sw163" : "tbl_sw165"
           },
           "default_entry" : {
             "action_id" : 5,
@@ -684,11 +768,11 @@
           }
         },
         {
-          "name" : "tbl_sw150",
+          "name" : "tbl_sw165",
           "id" : 3,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 150,
+            "line" : 165,
             "column" : 12,
             "source_fragment" : "hdr.packet_out.setInvalid()"
           },
@@ -700,10 +784,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [6],
-          "actions" : ["sw150"],
+          "actions" : ["sw165"],
           "base_default_next" : null,
           "next_tables" : {
-            "sw150" : null
+            "sw165" : null
           },
           "default_entry" : {
             "action_id" : 6,
@@ -713,11 +797,40 @@
           }
         },
         {
-          "name" : "MyIngress.ether_addr_table",
+          "name" : "tbl_sw169",
           "id" : 4,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 125,
+            "line" : 169,
+            "column" : 43,
+            "source_fragment" : "="
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [7],
+          "actions" : ["sw169"],
+          "base_default_next" : "node_11",
+          "next_tables" : {
+            "sw169" : "node_11"
+          },
+          "default_entry" : {
+            "action_id" : 7,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "MyIngress.ether_addr_table",
+          "id" : 5,
+          "source_info" : {
+            "filename" : "/opt/p4network/p4/sw.p4",
+            "line" : 140,
             "column" : 10,
             "source_fragment" : "ether_addr_table"
           },
@@ -764,7 +877,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 140,
+            "line" : 155,
             "column" : 12,
             "source_fragment" : "hdr.packet_out.isValid()"
           },
@@ -787,7 +900,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 141,
+            "line" : 156,
             "column" : 16,
             "source_fragment" : "hdr.packet_out.mcast_grp != 0"
           },
@@ -805,15 +918,15 @@
               }
             }
           },
-          "true_next" : "tbl_sw142",
-          "false_next" : "tbl_sw145"
+          "true_next" : "tbl_sw157",
+          "false_next" : "tbl_sw160"
         },
         {
           "name" : "node_6",
           "id" : 2,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 147,
+            "line" : 162,
             "column" : 16,
             "source_fragment" : "hdr.packet_out.src_ingress_port != 0"
           },
@@ -831,15 +944,38 @@
               }
             }
           },
-          "true_next" : "tbl_sw148",
-          "false_next" : "tbl_sw150"
+          "true_next" : "tbl_sw163",
+          "false_next" : "tbl_sw165"
         },
         {
           "name" : "node_9",
           "id" : 3,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 152,
+            "line" : 168,
+            "column" : 16,
+            "source_fragment" : "hdr.vlan.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "d2b",
+              "left" : null,
+              "right" : {
+                "type" : "field",
+                "value" : ["vlan", "$valid$"]
+              }
+            }
+          },
+          "true_next" : "tbl_sw169",
+          "false_next" : "node_11"
+        },
+        {
+          "name" : "node_11",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "/opt/p4network/p4/sw.p4",
+            "line" : 172,
             "column" : 16,
             "source_fragment" : "hdr.ethernet.isValid()"
           },
@@ -864,18 +1000,18 @@
       "id" : 1,
       "source_info" : {
         "filename" : "/opt/p4network/p4/sw.p4",
-        "line" : 161,
+        "line" : 181,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
-      "init_table" : "node_13",
+      "init_table" : "node_15",
       "tables" : [
         {
           "name" : "tbl_drop",
-          "id" : 5,
+          "id" : 6,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 173,
+            "line" : 193,
             "column" : 12,
             "source_fragment" : "drop()"
           },
@@ -886,14 +1022,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [7],
+          "action_ids" : [8],
           "actions" : ["MyEgress.drop"],
           "base_default_next" : null,
           "next_tables" : {
             "MyEgress.drop" : null
           },
           "default_entry" : {
-            "action_id" : 7,
+            "action_id" : 8,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -903,11 +1039,11 @@
       "action_profiles" : [],
       "conditionals" : [
         {
-          "name" : "node_13",
-          "id" : 4,
+          "name" : "node_15",
+          "id" : 5,
           "source_info" : {
             "filename" : "/opt/p4network/p4/sw.p4",
-            "line" : 172,
+            "line" : 192,
             "column" : 12,
             "source_fragment" : "standard_metadata.egress_port == standard_metadata.ingress_port"
           },
@@ -937,7 +1073,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/opt/p4network/p4/sw.p4",
-        "line" : 181,
+        "line" : 202,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
