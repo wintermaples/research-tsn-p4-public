@@ -71,7 +71,7 @@ def analyze_pcapng_file(pcapng_file_path: Path) -> Statistics:
 
 def main():
     pcapng_statistics_list: list[Statistics] = []
-    for pcapng_file_path in Path(pcap_file_folder_path).glob('*_100.pcapng'):
+    for pcapng_file_path in Path(pcap_file_folder_path).glob('*.pcapng'):
         pcapng_statistics_list.append(
             analyze_pcapng_file(pcapng_file_path)
         )

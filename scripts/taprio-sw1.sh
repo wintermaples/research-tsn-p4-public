@@ -29,7 +29,7 @@ num_tc 2 \
 map 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 \
 queues 1@0 1@1 \
 base-time 0 \
-sched-entry S 01 2467200 \
+sched-entry S 01 4934400 \
 sched-entry S 02 1233600 \
 flags 0x2
 
