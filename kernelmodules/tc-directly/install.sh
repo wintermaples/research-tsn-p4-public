@@ -1,0 +1,1 @@
+sudo make && sudo make install && sudo rmmod hello; sudo insmod /lib/modules/$(uname -r)/extra/hello.ko
