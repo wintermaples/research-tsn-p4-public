@@ -39,6 +39,7 @@ services:
     build: .
     entrypoint:
       - python
+      - -u
       - /opt/p4network/controllers.py
       - SW01
       - --grpc-addr
@@ -56,24 +57,24 @@ services:
       p4c:
         condition: service_completed_successfully
 
-  switchcontroller_sw02:
-    image: p4_autolearning_l2
-    build: .
-    entrypoint:
-      - python
-      - /opt/p4network/controllers.py
-      - SW02
-      - --grpc-addr
-      - 133.68.105.56:50001
-      - --config
-      - /opt/p4network/p4/sw.p4info.txt,/opt/p4network/p4/sw.json
-    restart: unless-stopped
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    volumes:
-    - type: bind
-      source: "./"
-      target: "/opt/p4network/"
-    depends_on:
-      p4c:
-        condition: service_completed_successfully
+  # switchcontroller_sw02:
+  #   image: p4_autolearning_l2
+  #   build: .
+  #   entrypoint:
+  #     - python
+  #     - /opt/p4network/controllers.py
+  #     - SW02
+  #     - --grpc-addr
+  #     - 133.68.105.56:50001
+  #     - --config
+  #     - /opt/p4network/p4/sw.p4info.txt,/opt/p4network/p4/sw.json
+  #   restart: unless-stopped
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
+  #   volumes:
+  #   - type: bind
+  #     source: "./"
+  #     target: "/opt/p4network/"
+  #   depends_on:
+  #     p4c:
+  #       condition: service_completed_successfully

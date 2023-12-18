@@ -18,6 +18,7 @@ sys.stdin = os.fdopen(sys.stdin.fileno(), 'r', buffering=1)
 
 FLOODING_MCAST_GROUP_ID: int = 255
 
+logging.basicConfig(level=logging.INFO)
 
 def get_metadata_value(metadata_fields, metadata_name, metadata_field_name) -> Any | None:
     metadata_field_id = None
@@ -322,7 +323,7 @@ class SwitchController_SW01(ExternalConfigSwitchController):
         features: list[SwitchFeature] = [
             SwitchFeature_SetMulticastGroup(
                 mcast_group_id=FLOODING_MCAST_GROUP_ID,
-                egress_ports={1, 2},
+                egress_ports={1, 2, 3},
             ),
             SwitchFeature_L2AutoLearning(
                 flooding_mcast_group_id=FLOODING_MCAST_GROUP_ID,
