@@ -20,12 +20,12 @@ static struct sock *nl_sock;
 
 static void send_packet(struct net_device *dev, unsigned char *data, int data_len) {
     struct sk_buff *skb;
-    struct netdev_queue *txq;
     struct ethhdr *ethh;
 
     skb = dev_alloc_skb(ETH_HLEN + data_len);
     if (!skb) {
         pr_err("Failed to allocate skb\n");
+        kfree_skb(skb);
         return;
     }
 
@@ -37,12 +37,6 @@ static void send_packet(struct net_device *dev, unsigned char *data, int data_le
 
     skb->dev = dev;
     skb->protocol = htons(ETH_P_802_3);
-
-    txq = netdev_get_tx_queue(dev, 0);
-
-    if (netif_tx_queue_stopped(txq)) {
-        netif_tx_wake_queue(txq);
-    }
 
     dev_queue_xmit(skb);
 }
@@ -80,19 +74,22 @@ static void nl_recv_msg(struct sk_buff *skb) {
         return;
     }
 
-    printk("%s", "=====\n");
-    printk("IFINDEX: %d\n", ifindex);
-    printk("DEV POINTER: %d\n", dev);
+    // printk("%s", "=====\n");
+    // printk("IFINDEX: %d\n", ifindex);
+    // printk("DEV POINTER: %d\n", dev);
 
-    struct netdev_name_node *name_node;
-    name_node = dev->name_node;
-    printk("%s\n", name_node->name);
+    // struct netdev_name_node *name_node;
+    // name_node = dev->name_node;
+    // printk("%s\n", name_node->name);
     
-    printk("DATA SIZE: %d\n", payload_len);
-    printk("DATA: %s\n", payload);
-    printk("%s", "=====\n");
+    // printk("DATA SIZE: %d\n", payload_len);
+    // printk("DATA: %s\n", payload);
+    // printk("%s", "=====\n");
     
     send_packet(dev, payload, payload_len);
+
+    kfree(msg);
+    kfree(payload);
 }
 
 struct netlink_kernel_cfg cfg = {
