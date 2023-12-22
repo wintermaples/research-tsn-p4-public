@@ -10,7 +10,7 @@ from pathlib import Path
 from pprint import pprint
 import statistics
 
-pcap_file_folder_path = '/home/yoshida/Documents/research-tsn-p4/experiment/'
+pcap_file_folder_path = '/home/itolab/Documents/research-tsn-p4/experiment/'
 
 @dataclass
 class Statistics:

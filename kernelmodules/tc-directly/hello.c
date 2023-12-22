@@ -70,7 +70,7 @@ static void nl_recv_msg(struct sk_buff *skb) {
 
     if (dev == NULL) {
         // Debug only.
-        // printk(KERN_WARNING "A device(Interface Index=%d) is not found.", ifindex);
+        printk(KERN_WARNING "A device(Interface Index=%d) is not found.", ifindex);
         return;
     }
 

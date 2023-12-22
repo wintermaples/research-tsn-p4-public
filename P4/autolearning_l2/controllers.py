@@ -189,13 +189,13 @@ class SwitchFeature_L2AutoLearning(SwitchFeature):
                             src_ingress_port=str(ingress_port),
                         ).send()
                     
-                    if src_mac.startswith("0xe8") or dst_mac.startswith("0xe8") or src_mac.startswith("0xb8") or dst_mac.startswith("0xb8"):
-                        for te in shell.TableEntry(self.table_name).read():
-                            print(te)
-                        print(ingress_port)
-                        print(src_mac)
-                        print(dst_mac)
-                        print("=" * 20)
+                    # if src_mac.startswith("0xe8") or dst_mac.startswith("0xe8") or src_mac.startswith("0xb8") or dst_mac.startswith("0xb8"):
+                    #     for te in shell.TableEntry(self.table_name).read():
+                    #         print(te)
+                    #     print(ingress_port)
+                    #     print(src_mac)
+                    #     print(dst_mac)
+                    #     print("=" * 20)
 
                 time.sleep(0.1)
 
@@ -355,7 +355,7 @@ class SwitchController_SW02(ExternalConfigSwitchController):
         features: list[SwitchFeature] = [
             SwitchFeature_SetMulticastGroup(
                 mcast_group_id=FLOODING_MCAST_GROUP_ID,
-                egress_ports={1, 2},
+                egress_ports={1, 2, 3},
             ),
             SwitchFeature_L2AutoLearning(
                 flooding_mcast_group_id=FLOODING_MCAST_GROUP_ID,
