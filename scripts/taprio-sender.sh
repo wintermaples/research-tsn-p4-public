@@ -4,7 +4,7 @@ ethtool -K enp2s0 gso off
 ethtool -K enp2s0 gro off
 ethtool -K enp2s0 tso off
 
-ethtool -s enp2s0 speed 10
+ethtool -s enp2s0 speed 100
 
 # pkill -f phc2sys
 # phc2sys -s /dev/ptp0 -c CLOCK_REALTIME -O 0 &
