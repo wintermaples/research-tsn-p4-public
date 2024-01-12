@@ -110,5 +110,5 @@ module_init(mymodule_init);
 module_exit(mymodule_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Your Name");
-MODULE_DESCRIPTION("Custom Kernel Module");
+MODULE_AUTHOR("YY");
+MODULE_DESCRIPTION("This module send a packet to tc directly.");
